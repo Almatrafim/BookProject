@@ -1,12 +1,20 @@
 using BookProject.Core;
+using BookProject.DataAccess;
 using BookProject.DataAccess.Repository;
 using BookProject.DataAccess.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<IRepository<Category>, CategoryRep>();
+builder.Services.AddScoped<IRepository<Category>, CategoryRep>();
+builder.Services.AddScoped<IRepository<Product>, ProductRep>();
+
+builder.Services.AddDbContext<DBcontext>(options =>
+    options.UseOracle(builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
+
 
 var app = builder.Build();
 

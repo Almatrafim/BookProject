@@ -10,50 +10,49 @@ namespace BookProject.DataAccess.Repository
 {
     public class CategoryRep : IRepository<Category>
     {
+        DBcontext db;
         List<Category> _categories;
         private Category category;
-        public CategoryRep() {
+        public CategoryRep(DBcontext db)
+        {
+            this.db = db;
             this._categories = new List<Category>();
            
         }
         public void Add(Category table)
         {
-             _categories.Add(table);
+             db.Categories.Add(table);
+            db.SaveChanges();
         }
 
         public void Delete(int Id)
         {
             category = Find(Id);
-            _categories.Remove(category);
+            db.Categories.Remove(category);
+            db.SaveChanges();
         }
 
         public void Edit(int Id, Category table)
         {
-            category =Find(Id);
-            category = new Category
-            {
-                id= table.id,
-                name = table.name,
-                description = table.description
-            };
-
-            var index = _categories.FindIndex(x => x.id == Id);
-            _categories[index] = category;
+            this.db = db;
+            db.Categories.Update(table);
+            db.SaveChanges();
+            
         }
 
         public Category Find(int Id)
         {
-          return  _categories.Where(x=> x.id == Id).First();
+          return  db.Categories.Where(x=> x.id == Id).First();
         }
 
         public List<Category> GetAllData()
         {
-            return _categories;
+            return db.Categories.ToList();
         }
 
         public List<Category> Search(string SerachItem)
         {
-            return _categories.Where(x=> x.name == SerachItem).ToList();
+            return db.Categories.Where(x=> x.name == SerachItem).ToList();
         }
     }
 }
